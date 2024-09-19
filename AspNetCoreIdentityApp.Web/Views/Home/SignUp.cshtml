@@ -4,6 +4,10 @@
 
 @model SignUpViewModel
 
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial");
+}
 
 <div class="row">
     <div class="col-md-6 offset-md-3">
@@ -17,7 +21,6 @@
         }
 
         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
-            
         </div>
 
         <form asp-controller="home" asp-action="SignUp" method="post">
