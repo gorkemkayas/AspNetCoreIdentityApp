@@ -1,4 +1,5 @@
-﻿using AspNetCoreIdentityApp.Web.Models;
+﻿using AspNetCoreIdentityApp.Web.Extensions;
+using AspNetCoreIdentityApp.Web.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,19 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlCon")));
 
-builder.Services.AddIdentity<AppUser,AppRole>(options => {
-
-    options.User.RequireUniqueEmail = true;
-    options.User.AllowedUserNameCharacters = "abcçdefgğhıijklmnoçpqrsştuüvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 5;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireDigit = false;
-
-})
-.AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddIdentityWithExtensions();
 
 var app = builder.Build();
 
