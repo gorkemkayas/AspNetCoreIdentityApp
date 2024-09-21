@@ -2,7 +2,9 @@ using AspNetCoreIdentityApp.Web.Models;
 using AspNetCoreIdentityApp.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Diagnostics;
+using AspNetCoreIdentityApp.Web.Extensions;
 
 namespace AspNetCoreIdentityApp.Web.Controllers
 {
@@ -12,10 +14,13 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
         private readonly UserManager<AppUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<AppUser> userManager)
+        private readonly SignInManager<AppUser> _signInManager;
+
+        public HomeController(ILogger<HomeController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _logger = logger;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
@@ -51,10 +56,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return RedirectToAction(nameof(SignUp));
             }
 
-            foreach (IdentityError item in identityResult.Errors)
-            {
-                ModelState.AddModelError(string.Empty,item.Description);
-            }
+            ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList();
 
             return View();
 
@@ -64,6 +66,32 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
         public IActionResult SignIn()
         {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SignIn(SignInViewModel request, string? returnUrl = null)
+        {
+            returnUrl = returnUrl ?? Url.Action("Index", "Home");
+
+            var hasUser = await _userManager.FindByEmailAsync(request.Email);
+
+            if (hasUser == null)
+            {
+                ModelState.AddModelError(string.Empty, "The email or password is not correct.");
+                return View();
+            }
+
+            var signInResult = await _signInManager.PasswordSignInAsync(hasUser, request.Password, request.RememberMe, false);
+
+            if (signInResult.Succeeded)
+            {
+                return Redirect(returnUrl);
+            }
+
+            ModelState.AddModelErrorList(new List<string>() { "The email or password is not correct." });
+
             return View();
         }
 

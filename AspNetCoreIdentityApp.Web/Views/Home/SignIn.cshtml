@@ -5,10 +5,19 @@
 
 @model SignInViewModel
 
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial");
+}
+
 <div class="row">
     <div class="col-md-4 offset-md-4">
         <h1 class="text-center">Login</h1>
         <hr />
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+        </div>
+
         <form asp-controller="Home" asp-action="SignIn" method="post">
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>
