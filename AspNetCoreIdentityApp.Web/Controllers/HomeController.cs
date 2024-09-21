@@ -56,7 +56,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return RedirectToAction(nameof(SignUp));
             }
 
-            ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList();
+            ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList());
 
             return View();
 
@@ -83,14 +83,22 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
 
-            var signInResult = await _signInManager.PasswordSignInAsync(hasUser, request.Password, request.RememberMe, false);
+            var signInResult = await _signInManager.PasswordSignInAsync(hasUser, request.Password, request.RememberMe, true);
 
             if (signInResult.Succeeded)
             {
                 return Redirect(returnUrl);
             }
 
-            ModelState.AddModelErrorList(new List<string>() { "The email or password is not correct." });
+            if (signInResult.IsLockedOut)
+            {
+                ModelState.AddModelErrorList(new List<string>()
+                {"You will not able to log in for 3 minutes."});
+                return View();
+            }
+
+
+            ModelState.AddModelErrorList(new List<string>() { $"The email or password is not correct.", $"Remaining login attempts: { 3 - (int)(await _userManager.GetAccessFailedCountAsync(hasUser))}" });
 
             return View();
         }
