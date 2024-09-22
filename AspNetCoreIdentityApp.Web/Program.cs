@@ -19,6 +19,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromDays(60);
     options.SlidingExpiration = true;
     options.LoginPath = "/Home/SignIn";
+    options.LogoutPath = new PathString("/Member/Logout");
 });
 
 var app = builder.Build();
@@ -36,6 +37,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllerRoute(

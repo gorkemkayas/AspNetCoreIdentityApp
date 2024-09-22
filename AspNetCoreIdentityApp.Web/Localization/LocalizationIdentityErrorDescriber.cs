@@ -19,5 +19,6 @@ namespace AspNetCoreIdentityApp.Web.Localization
         {
             return new() { Code = "PasswordTooShort", Description = "The password must be  at least 5 character long." };
         }
+
     }
 }
