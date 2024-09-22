@@ -98,7 +98,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             }
 
 
-            ModelState.AddModelErrorList(new List<string>() { $"The email or password is not correct.", $"Remaining login attempts: { 3 - (int)(await _userManager.GetAccessFailedCountAsync(hasUser))}" });
+            ModelState.AddModelErrorList(new List<string>() { $"The email or password is not correct.", $"Remaining login attempts: { 4 - (int)(await _userManager.GetAccessFailedCountAsync(hasUser))}" });
 
             return View();
         }
