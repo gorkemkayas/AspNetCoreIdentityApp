@@ -5,6 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Diagnostics;
 using AspNetCoreIdentityApp.Web.Extensions;
+using AspNetCoreIdentityApp.Web.Services;
+
+
+// ctlp pqvy ilov diyk password
+
 
 namespace AspNetCoreIdentityApp.Web.Controllers
 {
@@ -16,11 +21,14 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
         private readonly SignInManager<AppUser> _signInManager;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        private readonly IEmailService _emailService;
+
+        public HomeController(ILogger<HomeController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         public IActionResult Index()
@@ -121,7 +129,9 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             }
 
             string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
-            var passwordResetLink = Url.Action("ResetPassword","Home", new {userId = hasUser.Id, Token = passwordResetToken});
+            var passwordResetLink = Url.Action("ResetPassword","Home", new {userId = hasUser.Id, Token = passwordResetToken}, HttpContext.Request.Scheme);
+
+            await _emailService.SendResetPasswordEmail(passwordResetLink, model.Email);
 
             TempData["SucceedMessage"] = "Your password reset link has been sent to your email address.";
 
