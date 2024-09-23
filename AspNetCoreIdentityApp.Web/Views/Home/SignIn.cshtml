@@ -21,17 +21,24 @@
         <form asp-controller="Home" asp-action="SignIn" asp-route-returnUrl="@Context.Request.Query["returnUrl"]" method="post">
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>
-                <input class="form-control" asp-for="Email">
+                <input class="form-control" asp-for="Email" placeholder="Enter your email information...">
                 <span class="text-danger" asp-validation-for="Email"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Password" class="form-label"></label>
-                <input class="form-control" asp-for="Password">
+                <input class="form-control" asp-for="Password" placeholder="Enter your password...">
                 <span class="text-danger" asp-validation-for="Password"></span>
             </div>
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" asp-for="RememberMe">
-                <label class="form-check-label" asp-for="RememberMe"></label>
+                <div class="row">
+                    <div class="col-md-6" style="margin-top : 6px">
+                        <input type="checkbox" class="form-check-input" asp-for="RememberMe">
+                        <label class="form-check-label" asp-for="RememberMe"></label>
+                    </div>
+                    <div class="col-md-6">
+                        <a class="btn  float-end" asp-controller="Home" asp-action="ForgetPassword"><i class="bi bi-fingerprint me-1"></i>Forgot Password?</a>
+                    </div>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>

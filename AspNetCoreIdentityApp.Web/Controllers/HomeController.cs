@@ -43,7 +43,8 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         public async Task<IActionResult> SignUp(SignUpViewModel request)
         {
 
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid)
+            {
                 return View();
             }
 
@@ -60,7 +61,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             return View();
 
-            
+
         }
 
 
@@ -98,8 +99,14 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             }
 
 
-            ModelState.AddModelErrorList(new List<string>() { $"The email or password is not correct.", $"Remaining login attempts: { 4 - (int)(await _userManager.GetAccessFailedCountAsync(hasUser))}" });
+            ModelState.AddModelErrorList(new List<string>() { $"The email or password is not correct.", $"Remaining login attempts: {4 - (int)(await _userManager.GetAccessFailedCountAsync(hasUser))}" });
 
+            return View();
+        }
+
+
+        public IActionResult ForgetPassword()
+        {
             return View();
         }
 
