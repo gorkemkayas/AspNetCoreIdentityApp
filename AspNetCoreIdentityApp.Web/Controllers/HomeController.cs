@@ -110,6 +110,24 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordViewModel model)
+        {
+            var hasUser = await _userManager.FindByEmailAsync(model.Email);
+
+            if (hasUser == null) {
+                ModelState.AddModelError(string.Empty, "No account was found associated with the email address you specified.");
+                return View();
+            }
+
+            string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
+            var passwordResetLink = Url.Action("ResetPassword","Home", new {userId = hasUser.Id, Token = passwordResetToken});
+
+            TempData["SucceedMessage"] = "Your password reset link has been sent to your email address.";
+
+            return RedirectToAction(nameof(ForgetPassword));
+
+        }
 
 
 
