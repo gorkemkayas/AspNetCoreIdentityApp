@@ -131,7 +131,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
             var passwordResetLink = Url.Action("ResetPassword","Home", new {userId = hasUser.Id, Token = passwordResetToken}, HttpContext.Request.Scheme);
 
-            await _emailService.SendResetPasswordEmail(passwordResetLink, model.Email);
+            await _emailService.SendResetPasswordEmail(passwordResetLink, hasUser.Email); // changed from 'model.Email' to 'hasUser.Email'
 
             TempData["SucceedMessage"] = "Your password reset link has been sent to your email address.";
 
@@ -139,7 +139,48 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
         }
 
+        public async Task<IActionResult> ResetPassword(string userId,string Token)
+        {
+            TempData["userId"] = userId;
+            TempData["token"] = Token;
 
+            var hasUser = await _userManager.FindByIdAsync(userId);
+
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel request)
+        {
+            var userId = TempData["userId"];
+            var Token  = TempData["token"];
+
+            if (userId == null && Token == null)
+            {
+                throw new Exception("An error occured.");
+            }
+
+            var hasUser = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (hasUser == null)
+            {
+                ModelState.AddModelError(string.Empty, "User not found.");
+                return View();
+            }
+
+            var result = await _userManager.ResetPasswordAsync(hasUser, Token.ToString(), request.NewPassword);
+
+            if (result.Succeeded) {
+                TempData["SucceedMessage"] = "Your password updated successfully!";
+            }
+            else
+            {
+                ModelState.AddModelErrorList(result.Errors.Select(x => x.Description).ToList());
+            }
+
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
