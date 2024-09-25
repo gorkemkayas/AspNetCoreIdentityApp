@@ -163,7 +163,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 throw new Exception("An error occured.");
             }
 
-            var hasUser = await _userManager.FindByIdAsync(userId.ToString());
+            var hasUser = await _userManager.FindByIdAsync(userId!.ToString());
 
             if (hasUser == null)
             {
@@ -171,7 +171,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
 
-            var result = await _userManager.ResetPasswordAsync(hasUser, Token.ToString(), request.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(hasUser, Token!.ToString(), request.NewPassword);
 
             if (result.Succeeded) {
                 TempData["SucceedMessage"] = "Your password updated successfully!";
