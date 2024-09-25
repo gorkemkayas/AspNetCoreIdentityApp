@@ -103,7 +103,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             if (signInResult.Succeeded)
             {
-                return Redirect(returnUrl);
+                return Redirect(returnUrl!);
             }
 
             if (signInResult.IsLockedOut)
@@ -138,7 +138,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
             var passwordResetLink = Url.Action("ResetPassword","Home", new {userId = hasUser.Id, Token = passwordResetToken}, HttpContext.Request.Scheme);
 
-            await _emailService.SendResetPasswordEmail(passwordResetLink, hasUser.Email); // changed from 'model.Email' to 'hasUser.Email'
+            await _emailService.SendResetPasswordEmail(passwordResetLink!, hasUser.Email!); // changed from 'model.Email' to 'hasUser.Email'
 
             TempData["SucceedMessage"] = "Your password reset link has been sent to your email address.";
 
@@ -168,7 +168,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 throw new Exception("An error occured.");
             }
 
-            var hasUser = await _userManager.FindByIdAsync(userId!.ToString());
+            var hasUser = await _userManager.FindByIdAsync(userId!.ToString()!);
 
             if (hasUser == null)
             {
@@ -176,7 +176,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
 
-            var result = await _userManager.ResetPasswordAsync(hasUser, Token!.ToString(), request.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(hasUser, Token!.ToString()!, request.NewPassword);
 
             if (result.Succeeded) {
                 TempData["SucceedMessage"] = "Your password updated successfully!";

@@ -22,9 +22,9 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
             
-            var userViewModel = new UserViewModel{ Email = currentUser.Email, PhoneNumber = currentUser.PhoneNumber, UserName = currentUser.UserName};
+            var userViewModel = new UserViewModel{ Email = currentUser!.Email, PhoneNumber = currentUser.PhoneNumber, UserName = currentUser.UserName};
 
             return View(userViewModel);
         }
@@ -58,7 +58,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
 
-            var result = await _userManager.ChangePasswordAsync(hasUser, request.OldPassword, request.NewPassword);
+            var result = await _userManager.ChangePasswordAsync(hasUser!, request.OldPassword, request.NewPassword);
 
             if(!result.Succeeded)
             {
@@ -66,10 +66,10 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
 
-            await _userManager.UpdateSecurityStampAsync(hasUser);
+            await _userManager.UpdateSecurityStampAsync(hasUser!);
 
             await _signInManager.SignOutAsync();
-            await _signInManager.PasswordSignInAsync(hasUser, request.NewPassword, true, false);
+            await _signInManager.PasswordSignInAsync(hasUser!, request.NewPassword, true, false);
 
             TempData["SucceedMessage"] = "Password updated successfully.";
 

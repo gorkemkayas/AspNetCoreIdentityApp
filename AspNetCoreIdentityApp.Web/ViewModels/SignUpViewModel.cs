@@ -20,28 +20,28 @@ namespace AspNetCoreIdentityApp.Web.ViewModels
         [Display(Name = "Username :")]
         [MinLength(4,ErrorMessage ="The username should include least 4 letter.")]
         [MaxLength(18, ErrorMessage = "The username should include least 4 letter.")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = null!;
 
         [Required(ErrorMessage = "The 'Email' field cannot be left blank.")]
         [Display(Name = "Email :")]
         [EmailAddress(ErrorMessage ="Wrong Email format.")]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "The 'Phone' field cannot be left blank.")]
         [Display(Name = "Phone :")]
         [RegularExpression(@"^[0-9\s]+$", ErrorMessage = "Please enter just numbers.")]
-        public string Phone { get; set; }
+        public string Phone { get; set; } = null!;
 
         [Required(ErrorMessage = "The 'Password' field cannot be left blank.")]
         [Display(Name = "Password :")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string Password { get; set; } = null!;
 
         [Required(ErrorMessage = "The 'Password Confirm' field cannot be left blank.")]
         [Display(Name = "Password confirm :")]
         [Compare(nameof(Password),ErrorMessage = "The passwords are not equal.")]
         [DataType(DataType.Password)]
-        public string PasswordConfirm { get; set; }
+        public string PasswordConfirm { get; set; } = null!;
 
     }
 }
