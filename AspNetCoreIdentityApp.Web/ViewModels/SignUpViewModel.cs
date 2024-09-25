@@ -18,8 +18,8 @@ namespace AspNetCoreIdentityApp.Web.ViewModels
         }
         [Required(ErrorMessage= "The 'Username' field cannot be left blank.")]
         [Display(Name = "Username :")]
-        [MinLength(4,ErrorMessage ="The username should include least 4 lettter.")]
-        [MaxLength(18, ErrorMessage = "The username should include least 4 lettter.")]
+        [MinLength(4,ErrorMessage ="The username should include least 4 letter.")]
+        [MaxLength(18, ErrorMessage = "The username should include least 4 letter.")]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "The 'Email' field cannot be left blank.")]
