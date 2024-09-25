@@ -3,5 +3,29 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Welcome, @User.Identity.Name</h1>
+@model UserViewModel
 
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+<h1 class="text-center">User Informations</h1>
+<hr />
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.UserName</td>
+            <td>@Model.Email</td>
+            <td>@Model.PhoneNumber</td>
+        </tr>
+    </tbody>
+</table>
+    </div>
+</div>

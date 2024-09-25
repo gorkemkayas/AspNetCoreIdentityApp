@@ -6,6 +6,7 @@
                 Welcome, @User.Identity.Name
             </a>
             <ul class="dropdown-menu" style="margin-left :40px">
+                <li><a class="dropdown-item" asp-controller="Member" asp-action="Index">Profile</a></li>
                 <li><a class="dropdown-item" asp-route-returnUrl ="/Home/Index" asp-controller="Member" asp-action="Logout">Logout</a></li>
             </ul>
         </li>
