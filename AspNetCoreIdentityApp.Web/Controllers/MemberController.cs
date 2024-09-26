@@ -28,7 +28,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         {
             var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
 
-            var userViewModel = new UserViewModel { Email = currentUser!.Email, PhoneNumber = currentUser.PhoneNumber, UserName = currentUser.UserName };
+            var userViewModel = new UserViewModel { Email = currentUser!.Email, PhoneNumber = currentUser.PhoneNumber, UserName = currentUser.UserName, PictureUrl = currentUser.Picture };
 
             return View(userViewModel);
         }
