@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewData["Title"] = "User Informations";
+}
+
+@model UserEditViewModel
+
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial");
+}
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <h1 class="text-center">User Informations</h1>
+        <hr />
+
+        @if (TempData["SucceedMessage"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["SucceedMessage"]
+            </div>
+        }
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+        </div>
+
+        <form asp-controller="Member" asp-action="UserEdit" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="UserName" class="form-label" asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" placeholder="Enter your new Username...">
+                <span class="text-danger" asp-validation-for="UserName"></span>
+            </div>
+            <div class="mb-3">
+                <label for="Email" class="form-label" asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" placeholder="Enter your new Email...">
+                <span class="text-danger" asp-validation-for="Email"></span>
+            </div>
+            <div class="mb-3">
+                <label for="Phone" class="form-label" asp-for="Phone"></label>
+                <input asp-for="Phone" class="form-control" placeholder="Enter your new Phone Number...">
+                <span class="text-danger" asp-validation-for="Phone"></span>
+            </div>
+            <div class="mb-3">
+                <label for="BirthDate" class="form-label" asp-for="BirthDate"></label>
+                <input asp-for="BirthDate" class="form-control" placeholder="Enter your Birthdate...">
+                <span class="text-danger" asp-validation-for="BirthDate"></span>
+            </div>
+            <div class="mb-3">
+                <label for="City" class="form-label" asp-for="City"></label>
+                <input asp-for="City" class="form-control" placeholder="Enter your new City...">
+                <span class="text-danger" asp-validation-for="City"></span>
+            </div>
+            <div class="mb-3">
+                <label for="Gender" class="form-label" asp-for="Gender"></label>
+                <select class="form-control" asp-for="Gender" asp-items="ViewBag.Gender">
+                    <option value="">Select Gender</option>
+                </select>
+                <span class="text-danger" asp-validation-for="Gender"></span>
+            </div>
+            <div class="mb-3">
+                <label for="Picture" class="form-label" asp-for="Picture"></label>
+                <input class="form-control" type="file" asp-for="Picture" />
+                <span class="text-danger" asp-validation-for="Picture"></span>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary float-end">Update Informations</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+

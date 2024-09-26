@@ -4,6 +4,7 @@ using AspNetCoreIdentityApp.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AspNetCoreIdentityApp.Web.Controllers
 {
@@ -23,8 +24,8 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
-            
-            var userViewModel = new UserViewModel{ Email = currentUser!.Email, PhoneNumber = currentUser.PhoneNumber, UserName = currentUser.UserName};
+
+            var userViewModel = new UserViewModel { Email = currentUser!.Email, PhoneNumber = currentUser.PhoneNumber, UserName = currentUser.UserName };
 
             return View(userViewModel);
         }
@@ -60,9 +61,10 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             var result = await _userManager.ChangePasswordAsync(hasUser!, request.OldPassword, request.NewPassword);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 ModelState.AddModelErrorList(result.Errors.Select(x => x.Description).ToList());
+
                 return View();
             }
 
@@ -74,6 +76,24 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             TempData["SucceedMessage"] = "Password updated successfully.";
 
             return View();
+        }
+
+        public async Task<IActionResult> UserEdit()
+        {
+            ViewBag.Gender = new SelectList(Enum.GetNames(typeof(Gender)));
+            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+
+            var userEditViewModel = new UserEditViewModel()
+            {
+                UserName = currentUser.UserName,
+                Email = currentUser.Email,
+                Phone = currentUser.PhoneNumber,
+                BirthDate = currentUser.BirthDate,
+                City = currentUser.City,
+                Gender = currentUser.Gender
+            };
+
+            return View(userEditViewModel);
         }
     }
 }
