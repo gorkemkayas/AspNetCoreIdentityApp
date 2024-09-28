@@ -26,6 +26,7 @@ namespace AspNetCoreIdentityApp.Web.TagHelpers
             {
                 stringBuilder.Append(@$"<span class='badge bg-secondary me-1'>{x}</span>");
             });
+
             if(userRoles.Count()==0)
             {
                 stringBuilder.Append(@$"<span class='badge bg-danger me-1'>No Role</span>");

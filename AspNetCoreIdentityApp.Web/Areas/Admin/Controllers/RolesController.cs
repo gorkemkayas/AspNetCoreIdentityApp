@@ -149,8 +149,7 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
 
             // Update security stamp for security.
             await _userManager.UpdateSecurityStampAsync(currentUser);
-            await _signInManager.SignOutAsync();
-            await _signInManager.SignInAsync(currentUser, isPersistent: true);
+            
 
             return RedirectToAction(nameof(HomeController.UserList),"Home");
         }
