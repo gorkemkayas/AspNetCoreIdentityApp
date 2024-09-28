@@ -135,7 +135,7 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
             return View(roleViewModelList);
         }
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager,Human Resources")]
         [HttpPost]
         public async Task<IActionResult> AssignRoleToUser(List<AssignRoleToUserViewModel> requestList, string UserId)
         {

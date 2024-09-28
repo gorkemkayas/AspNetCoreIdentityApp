@@ -8,6 +8,14 @@
             <ul class="dropdown-menu" style="margin-left :40px">
                 <li><a class="dropdown-item" asp-controller="Member" asp-action="Index">Profile</a></li>
                 <li><a class="dropdown-item" asp-controller="Member" asp-action="PasswordChange">Update Password</a></li>
+                @if(User.HasClaim(x=>x.Type == System.Security.Claims.ClaimTypes.Role && x.Value=="Manager"))
+                {
+                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Panel</a></li>
+                }
+                @if (User.HasClaim(x => x.Type == System.Security.Claims.ClaimTypes.Role && x.Value == "Human Resources"))
+                {
+                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="UserList">HR Panel</a></li>
+                }
                 <li><a class="dropdown-item" asp-controller="Member" asp-action="UserEdit">User Information</a></li>
                 <li><a class="dropdown-item" asp-route-returnUrl ="/Home/Index" asp-controller="Member" asp-action="Logout">Logout</a></li>
             </ul>

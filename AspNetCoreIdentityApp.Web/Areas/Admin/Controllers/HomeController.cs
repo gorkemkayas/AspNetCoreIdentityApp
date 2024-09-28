@@ -9,7 +9,7 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
 {
 
     [Area(nameof(Admin))]
-    [Authorize]
+    [Authorize(Roles ="Manager,Human Resources")]
     public class HomeController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
