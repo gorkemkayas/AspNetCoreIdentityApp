@@ -37,6 +37,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
     options.LoginPath = new PathString("/Home/SignIn");
     options.LogoutPath = new PathString("/Member/Logout");
+    options.AccessDeniedPath = new PathString("/Member/AccessDenied");
 });
 
 var app = builder.Build();

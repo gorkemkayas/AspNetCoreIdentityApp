@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 
 namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
     public class RolesController : Controller
     {
 
@@ -33,12 +33,13 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
             return View(roles);
         }
 
-
+        [Authorize(Roles ="Manager")]
         public IActionResult RoleCreate()
         {
             return View();
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<IActionResult> RoleCreate(RoleCreateViewModel request)
         {
@@ -50,10 +51,11 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
                 return View();
             }
 
-            TempData["SucceedMessage"] = $"The role named as '{request.Name} is created successfully!'";
+            TempData["SucceedMessage"] = $"The role named as '{request.Name}' is created successfully!";
             return RedirectToAction(nameof(RolesController.Index));    
         }
 
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> RoleUpdate(string Id)
         {
             var roleToUpdate = await _roleManager.FindByIdAsync(Id);
@@ -66,6 +68,7 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
             return View(new RoleUpdateViewModel() {Id =roleToUpdate!.Id, Name = roleToUpdate!.Name!});
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<IActionResult> RoleUpdate(RoleUpdateViewModel request)
         {
@@ -88,6 +91,7 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(RolesController.Index));
         }
 
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> RoleDelete(string Id)
         {
             var roleToDelete = await _roleManager.FindByIdAsync(Id);
@@ -107,6 +111,7 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(RolesController.Index));
         }
 
+        [Authorize(Roles = "Manager,Human Resources")]
         public async Task<IActionResult> AssignRoleToUser(string Id)
         {
             ViewBag.UserId = Id;
@@ -130,6 +135,7 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
             return View(roleViewModelList);
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<IActionResult> AssignRoleToUser(List<AssignRoleToUserViewModel> requestList, string UserId)
         {
@@ -149,6 +155,13 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
 
             // Update security stamp for security.
             await _userManager.UpdateSecurityStampAsync(currentUser);
+
+            await _signInManager.SignOutAsync();
+
+
+            var recentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name) ?? throw new Exception("The username retrieved from User.Identity did not match the end user.");
+
+            await _signInManager.SignInAsync(recentUser,true);
             
 
             return RedirectToAction(nameof(HomeController.UserList),"Home");

@@ -158,5 +158,17 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             return View(updatedUser);
         }
+
+        public IActionResult AccessDenied(string returnUrl)
+        {
+
+            string message = string.Empty;
+
+            message = "You do not have permission to view this page. For permission, please contact your manager or HR.";
+            ViewBag.Message = message;
+
+            return View();
+        }
+        
     }
 }
