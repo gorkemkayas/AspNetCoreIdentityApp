@@ -43,7 +43,7 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
             if (!result.Succeeded) 
             { 
                 ModelState.AddModelErrorList(result.Errors);
-            return View();
+                return View();
             }
 
             TempData["SucceedMessage"] = $"The role named as '{request.Name} is created successfully!'";
@@ -101,6 +101,28 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
 
             TempData["SucceedMessage"] = $"The role named as '{roleToDelete.Name} is deleted successfully!'";
             return RedirectToAction(nameof(RolesController.Index));
+        }
+
+        public async Task<IActionResult> AssignRoleToUser(string Id)
+        {
+            var currentUser = await _userManager.FindByIdAsync(Id) ?? throw new Exception("The User not found.");
+            var roles = await _roleManager.Roles.ToListAsync();
+            var userRoles = await _userManager.GetRolesAsync(currentUser);
+            var roleViewModelList = new List<AssignRoleToUserViewModel>();
+
+            foreach (var role in roles)
+            {
+                var assignRoleToViewModel = new AssignRoleToUserViewModel() { Id = role.Id, Name = role.Name!};
+
+                if (userRoles.Contains(role.Name!)) 
+                { 
+                assignRoleToViewModel.Exist = true;
+                }
+
+                roleViewModelList.Add(assignRoleToViewModel);
+            }
+
+            return View(roleViewModelList);
         }
     }
 }
