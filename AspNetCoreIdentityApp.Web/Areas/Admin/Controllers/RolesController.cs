@@ -1,6 +1,7 @@
 ﻿using AspNetCoreIdentityApp.Web.Areas.Admin.Models;
 using AspNetCoreIdentityApp.Web.Extensions;
 using AspNetCoreIdentityApp.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,16 +9,19 @@ using Microsoft.EntityFrameworkCore;
 namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class RolesController : Controller
     {
 
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public RolesController(RoleManager<AppRole> roleManager, UserManager<AppUser> userManager)
+        public RolesController(RoleManager<AppRole> roleManager, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> Index()
@@ -105,8 +109,9 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> AssignRoleToUser(string Id)
         {
+            ViewBag.UserId = Id;
             var currentUser = await _userManager.FindByIdAsync(Id) ?? throw new Exception("The User not found.");
-            var roles = await _roleManager.Roles.ToListAsync();
+            var roles = await _roleManager.Roles.AsNoTracking().ToListAsync();
             var userRoles = await _userManager.GetRolesAsync(currentUser);
             var roleViewModelList = new List<AssignRoleToUserViewModel>();
 
@@ -123,6 +128,31 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
             }
 
             return View(roleViewModelList);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignRoleToUser(List<AssignRoleToUserViewModel> requestList, string UserId)
+        {
+            var currentUser = await _userManager.FindByIdAsync(UserId) ?? throw new Exception("The User not found.");
+
+            foreach (var role in requestList)
+            {
+                if (role.Exist)
+                {
+                    await _userManager.AddToRoleAsync(currentUser,role.Name);
+                }
+                else
+                {
+                    await _userManager.RemoveFromRoleAsync(currentUser,role.Name);
+                }
+            }
+
+            // Update security stamp for security.
+            await _userManager.UpdateSecurityStampAsync(currentUser);
+            await _signInManager.SignOutAsync();
+            await _signInManager.SignInAsync(currentUser, isPersistent: true);
+
+            return RedirectToAction(nameof(HomeController.UserList),"Home");
         }
     }
 }

@@ -6,7 +6,9 @@
 
 @model List<AdminModel.UserViewModel>
 
-<h1>UserList</h1>
+
+<h1 class="text-center">User List</h1>
+<hr />
 
 <table class="table table-striped">
     <thead>
@@ -14,6 +16,7 @@
             <th>Id</th>
             <th>User Name</th>
             <th>Email</th>
+            <th>Role Actions</th>
         </tr>
     </thead>
 
@@ -24,6 +27,7 @@
                 <td>@item.Id</td>
                 <td>@item.Name</td>
                 <td>@item.Email</td>
+                <td><a class="btn btn-success btn-sm" asp-area="Admin" asp-controller="Roles" asp-action="AssignRoleToUser" asp-route-Id="@item.Id">Assign Role</a></td>
             </tr>
         }
     </tbody>
