@@ -8,6 +8,7 @@
             <ul class="dropdown-menu" style="margin-left :40px">
                 <li><a class="dropdown-item" asp-controller="Member" asp-action="Index">Profile</a></li>
                 <li><a class="dropdown-item" asp-controller="Member" asp-action="PasswordChange">Update Password</a></li>
+                <li><a class="dropdown-item" asp-controller="Member" asp-action="Claims">Show Claims</a></li>
                 @if(User.HasClaim(x=>x.Type == System.Security.Claims.ClaimTypes.Role && x.Value=="Manager"))
                 {
                     <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Panel</a></li>

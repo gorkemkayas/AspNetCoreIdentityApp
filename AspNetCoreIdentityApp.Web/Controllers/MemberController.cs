@@ -169,6 +169,20 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             return View();
         }
+
+        [HttpGet]
+        public IActionResult Claims()
+        {
+            var claims = User.Claims.Select(x => new ClaimViewModel() { Issuer = x.Issuer, Type = x.Type , Value = x.Value}).ToList();
+
+            return View(claims);
+        }
+
+        [Authorize(Policy = "CapitalCity")]
+        public IActionResult CapitalCity()
+        {
+            return View();
+        }
         
     }
 }
