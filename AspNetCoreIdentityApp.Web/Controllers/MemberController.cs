@@ -183,6 +183,12 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         {
             return View();
         }
-        
+
+        [Authorize(Policy = "TrialClaim")]
+        public IActionResult TrialPage()
+        {
+            return View();
+        }
+
     }
 }

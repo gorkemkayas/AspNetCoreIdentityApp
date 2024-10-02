@@ -2,8 +2,10 @@
 using AspNetCoreIdentityApp.Web.Extensions;
 using AspNetCoreIdentityApp.Web.Models;
 using AspNetCoreIdentityApp.Web.OptionsModel;
+using AspNetCoreIdentityApp.Web.Requirements;
 using AspNetCoreIdentityApp.Web.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -29,11 +31,16 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddIdentityWithExtensions();
 builder.Services.AddScoped<IClaimsTransformation,UserClaimProvider>();
+builder.Services.AddScoped<IAuthorizationHandler,TrialClaimExpireRequirementHandler>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CapitalCity",policy =>
     {
         policy.RequireClaim("City", "Ankara");
+    });
+    options.AddPolicy("TrialClaim", policy =>
+    {
+        policy.AddRequirements(new TrialClaimExpireRequirement());
     });
 });
 

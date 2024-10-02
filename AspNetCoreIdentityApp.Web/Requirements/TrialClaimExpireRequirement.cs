@@ -15,7 +15,7 @@ namespace AspNetCoreIdentityApp.Web.Requirements
                 return Task.CompletedTask;
             }
 
-            var trialExpireDate = context.User.FindFirst("TrialClaim");
+            var trialExpireDate = context.User.FindFirst("TrialClaim")!.Value;
 
             if (DateTime.Now > Convert.ToDateTime(trialExpireDate))
             {

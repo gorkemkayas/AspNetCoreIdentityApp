@@ -17,12 +17,8 @@ namespace AspNetCoreIdentityApp.Web.ClaimProvider
 
         public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
         {
-
-            // ClaimsPrincipal ve principal explanations
-
             var identityUser = principal.Identity as ClaimsIdentity;
 
-            //var preUser = principal.Identity;
             //Identity => name isauthenticate isauthenticateType
             //ClaimsIdentity => Name isauthenticate isauthenticateType claims  NameClaimType RoleClaimType label
 
@@ -32,7 +28,6 @@ namespace AspNetCoreIdentityApp.Web.ClaimProvider
             {
                 return principal;
             }
-
 
             if (principal.HasClaim(x => x.Type != "City"))
             {
