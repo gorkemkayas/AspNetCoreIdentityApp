@@ -75,7 +75,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             var newUser = await _userManager.FindByNameAsync(request.UserName);
             var claimResult = await _userManager.AddClaimAsync(newUser!, trialClaim);
 
-            if(!claimResult.Succeeded)
+            if (!claimResult.Succeeded)
             {
                 ModelState.AddModelErrorList(claimResult.Errors.Select(x => x.Description).ToList());
 
@@ -114,22 +114,24 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             var signInResult = await _signInManager.PasswordSignInAsync(hasUser, request.Password, request.RememberMe, true);
 
-            if (signInResult.Succeeded)
-            {
-                return Redirect(returnUrl!);
-            }
-
             if (signInResult.IsLockedOut)
             {
                 ModelState.AddModelErrorList(new List<string>()
                 {"You will not able to log in for 3 minutes."});
                 return View();
             }
+            if (!signInResult.Succeeded)
+            {
+                ModelState.AddModelErrorList(new List<string>() { $"The email or password is not correct.", $"Remaining login attempts: {4 - (int)(await _userManager.GetAccessFailedCountAsync(hasUser))}" });
+                return View();
+            }
 
+            if (hasUser.BirthDate.HasValue)
+            {
+                await _signInManager.SignInWithClaimsAsync(hasUser, request.RememberMe, new[] { new Claim("Birthdate", hasUser.BirthDate.Value.ToString()) });
 
-            ModelState.AddModelErrorList(new List<string>() { $"The email or password is not correct.", $"Remaining login attempts: {4 - (int)(await _userManager.GetAccessFailedCountAsync(hasUser))}" });
-
-            return View();
+            }
+            return Redirect(returnUrl!);
         }
 
 
