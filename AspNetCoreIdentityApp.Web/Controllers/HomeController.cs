@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Diagnostics;
 using AspNetCoreIdentityApp.Web.Extensions;
 using AspNetCoreIdentityApp.Web.Services;
+using System.Security.Claims;
 
 
 // ctlp pqvy ilov diyk password
@@ -61,16 +62,28 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             var identityResult = await _userManager.CreateAsync(new() { UserName = request.UserName, PhoneNumber = request.Phone, Email = request.Email }, request.Password);
 
 
-            if (identityResult.Succeeded)
+            if (!identityResult.Succeeded)
             {
-                TempData["SucceedMessage"] = "Membership process completed successfully.";
-                return RedirectToAction(nameof(SignUp));
+                ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList());
+
+                return View();
             }
 
-            ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList());
 
-            return View();
+            var trialClaim = new Claim("TrialClaim", DateTime.Now.AddDays(7).ToString());
 
+            var newUser = await _userManager.FindByNameAsync(request.UserName);
+            var claimResult = await _userManager.AddClaimAsync(newUser!, trialClaim);
+
+            if(!claimResult.Succeeded)
+            {
+                ModelState.AddModelErrorList(claimResult.Errors.Select(x => x.Description).ToList());
+
+                return View();
+            }
+
+            TempData["SucceedMessage"] = "Membership process completed successfully.";
+            return RedirectToAction(nameof(SignUp));
 
         }
 
@@ -130,13 +143,14 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         {
             var hasUser = await _userManager.FindByEmailAsync(model.Email);
 
-            if (hasUser == null) {
+            if (hasUser == null)
+            {
                 ModelState.AddModelError(string.Empty, "No account was found associated with the email address you specified.");
                 return View();
             }
 
             string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
-            var passwordResetLink = Url.Action("ResetPassword","Home", new {userId = hasUser.Id, Token = passwordResetToken}, HttpContext.Request.Scheme);
+            var passwordResetLink = Url.Action("ResetPassword", "Home", new { userId = hasUser.Id, Token = passwordResetToken }, HttpContext.Request.Scheme);
 
             await _emailService.SendResetPasswordEmail(passwordResetLink!, hasUser.Email!); // changed from 'model.Email' to 'hasUser.Email'
 
@@ -146,7 +160,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
         }
 
-        public async Task<IActionResult> ResetPassword(string userId,string Token)
+        public async Task<IActionResult> ResetPassword(string userId, string Token)
         {
             TempData["userId"] = userId;
             TempData["token"] = Token;
@@ -161,7 +175,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel request)
         {
             var userId = TempData["userId"];
-            var Token  = TempData["token"];
+            var Token = TempData["token"];
 
             if (userId == null && Token == null)
             {
@@ -178,7 +192,8 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             var result = await _userManager.ResetPasswordAsync(hasUser, Token!.ToString()!, request.NewPassword);
 
-            if (result.Succeeded) {
+            if (result.Succeeded)
+            {
                 TempData["SucceedMessage"] = "Your password updated successfully!";
             }
             else
