@@ -148,7 +148,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             if(request.BirthDate.HasValue)
             {
-                await _signInManager.SignInWithClaimsAsync(currentUser, true, new[] { new Claim("Birthdate", request.BirthDate.Value.ToString("MM-dd-yyyy"))});
+                await _signInManager.SignInWithClaimsAsync(currentUser, true, new[] { new Claim("Birthdate", request.BirthDate.Value.ToString())});
             }
             else
             {
@@ -196,6 +196,12 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
         [Authorize(Policy = "TrialClaim")]
         public IActionResult TrialPage()
+        {
+            return View();
+        }
+
+        [Authorize(Policy = "Violence")]
+        public IActionResult ViolencePage()
         {
             return View();
         }

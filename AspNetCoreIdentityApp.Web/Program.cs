@@ -32,6 +32,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.AddIdentityWithExtensions();
 builder.Services.AddScoped<IClaimsTransformation,UserClaimProvider>();
 builder.Services.AddScoped<IAuthorizationHandler,TrialClaimExpireRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ViolenceRequirementHandler>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CapitalCity",policy =>
@@ -41,6 +42,10 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("TrialClaim", policy =>
     {
         policy.AddRequirements(new TrialClaimExpireRequirement());
+    });
+    options.AddPolicy("Violence", policy =>
+    {
+        policy.AddRequirements(new ViolenceRequirement() { ThresholdAge = 18 });
     });
 });
 
