@@ -2,6 +2,7 @@
 using AspNetCoreIdentityApp.Web.Extensions;
 using AspNetCoreIdentityApp.Web.Models;
 using AspNetCoreIdentityApp.Web.OptionsModel;
+using AspNetCoreIdentityApp.Web.PermissionRoot;
 using AspNetCoreIdentityApp.Web.Requirements;
 using AspNetCoreIdentityApp.Web.Seeds;
 using AspNetCoreIdentityApp.Web.Services;
@@ -48,6 +49,19 @@ builder.Services.AddAuthorization(options =>
     {
         policy.AddRequirements(new ViolenceRequirement() { ThresholdAge = 18 });
     });
+    options.AddPolicy("Permissions.Stock.Delete", policy =>
+    {
+        policy.RequireClaim("Permission",Permissions.Stock.Delete);
+    });
+    options.AddPolicy("Permissions.Order.Read", policy =>
+    {
+        policy.RequireClaim("Permission", Permissions.Order.Read);
+    });
+    options.AddPolicy("Permissions.Order.Delete", policy =>
+    {
+        policy.RequireClaim("Permission", Permissions.Order.Delete);
+    });
+
 });
 
 builder.Services.ConfigureApplicationCookie(options =>
