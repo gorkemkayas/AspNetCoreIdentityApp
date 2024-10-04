@@ -5,7 +5,7 @@ using AspNetCoreIdentityApp.Core.OptionsModel;
 using AspNetCoreIdentityApp.Core.PermissionRoot;
 using AspNetCoreIdentityApp.Web.Requirements;
 using AspNetCoreIdentityApp.Repository.Seeds;
-using AspNetCoreIdentityApp.Web.Services;
+using AspNetCoreIdentityApp.Service.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -38,6 +38,7 @@ builder.Services.AddIdentityWithExtensions();
 builder.Services.AddScoped<IClaimsTransformation,UserClaimProvider>();
 builder.Services.AddScoped<IAuthorizationHandler,TrialClaimExpireRequirementHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ViolenceRequirementHandler>();
+builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CapitalCity",policy =>

@@ -9,6 +9,7 @@ using Microsoft.Extensions.FileProviders;
 using System.Collections.Generic;
 using System.Security.Claims;
 using AspNetCoreIdentityApp.Core.Models;
+using AspNetCoreIdentityApp.Service.Services;
 
 namespace AspNetCoreIdentityApp.Web.Controllers
 {
@@ -19,26 +20,24 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IFileProvider _fileProvider;
+        private readonly IMemberService _memberService;
+        private string UserName => User.Identity!.Name!;
 
-        public MemberController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IFileProvider fileProvider)
+        public MemberController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IFileProvider fileProvider, IMemberService memberService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _fileProvider = fileProvider;
+            _memberService = memberService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
-
-            var userViewModel = new UserViewModel { Email = currentUser!.Email, PhoneNumber = currentUser.PhoneNumber, UserName = currentUser.UserName, PictureUrl = currentUser.Picture };
-
-            return View(userViewModel);
+            return View(await _memberService.GetUserViewModelByUserNameAsync(UserName));
         }
         public async Task Logout()
         {
-            await _signInManager.SignOutAsync();
-
+            await _memberService.LogoutAsync();
         }
 
         public IActionResult PasswordChange()
@@ -54,30 +53,21 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
 
-            var hasUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
-
-            var checkOldPassword = await _userManager.CheckPasswordAsync(hasUser!, request.OldPassword);
-
-            if (!checkOldPassword)
+            if (!await _memberService.CheckPasswordAsync(UserName, request.OldPassword))
             {
                 ModelState.AddModelError(string.Empty, "Old password is not correct!");
 
                 return View();
             }
 
-            var result = await _userManager.ChangePasswordAsync(hasUser!, request.OldPassword, request.NewPassword);
+            var (isSuccess, errors) = await _memberService.ChangePasswordAsync(UserName, request.OldPassword, request.NewPassword);
 
-            if (!result.Succeeded)
+            if (!isSuccess)
             {
-                ModelState.AddModelErrorList(result.Errors.Select(x => x.Description).ToList());
+                ModelState.AddModelErrorList(errors!);
 
                 return View();
             }
-
-            await _userManager.UpdateSecurityStampAsync(hasUser!);
-
-            await _signInManager.SignOutAsync();
-            await _signInManager.PasswordSignInAsync(hasUser!, request.NewPassword, true, false);
 
             TempData["SucceedMessage"] = "Password updated successfully.";
 
@@ -86,20 +76,8 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
         public async Task<IActionResult> UserEdit()
         {
-            ViewBag.Gender = new SelectList(Enum.GetNames(typeof(Gender)));
-            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
-
-            var userEditViewModel = new UserEditViewModel()
-            {
-                UserName = currentUser!.UserName!,
-                Email = currentUser!.Email!,
-                Phone = currentUser!.PhoneNumber!,
-                BirthDate = currentUser.BirthDate,
-                City = currentUser.City,
-                Gender = currentUser.Gender
-            };
-
-            return View(userEditViewModel);
+            ViewBag.Gender = _memberService.GetGenderSelectList();
+            return View(await _memberService.GetUserEditViewModelAsync(UserName));
         }
 
         [HttpPost]
@@ -110,64 +88,16 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
 
-            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+            var (isSuccess,errors) = await _memberService.EditUser(request,UserName);
 
-            currentUser!.Email = request.Email;
-            currentUser.City = request.City;
-            currentUser.BirthDate = request.BirthDate;
-            currentUser.UserName = request.UserName;
-            currentUser.Gender = request.Gender;
-            currentUser.PhoneNumber = request.Phone;
-
-
-            if (request.Picture != null && request.Picture.Length > 0)
-            {
-                var wwwrootFolder = _fileProvider.GetDirectoryContents("wwwroot");
-
-                var randomFileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(request.Picture.FileName)}";
-
-                var newPicturePath = Path.Combine(wwwrootFolder.First(x=> x.Name == "userPictures").PhysicalPath!,randomFileName);
-
-                using var stream = new FileStream(newPicturePath, FileMode.Create);
-
-                await request.Picture.CopyToAsync(stream);
-
-                currentUser.Picture = randomFileName;
-
-
-            }
-
-            var updateToResult = await _userManager.UpdateAsync(currentUser);
-
-            if (!updateToResult.Succeeded) {
-                ModelState.AddModelErrorList(updateToResult.Errors);
+            if (!isSuccess) {
+                ModelState.AddModelErrorList(errors!);
                 return View();
             }
 
-            await _userManager.UpdateSecurityStampAsync(currentUser);
-            await _signInManager.SignOutAsync();
-
-            if(request.BirthDate.HasValue)
-            {
-                await _signInManager.SignInWithClaimsAsync(currentUser, true, new[] { new Claim("Birthdate", request.BirthDate.Value.ToString())});
-            }
-            else
-            {
-                await _signInManager.SignInAsync(currentUser,true);
-            }
             TempData["SucceedMessage"] = "User informations updated successfully.";
 
-            var updatedUser = new UserEditViewModel()
-            {
-                UserName = currentUser.UserName,
-                BirthDate = currentUser.BirthDate,
-                City = currentUser.City,
-                Email = currentUser.Email,
-                Gender = currentUser.Gender,
-                Phone = currentUser.PhoneNumber
-            };
-
-            return View(updatedUser);
+            return View(await _memberService.GetUserEditViewModelAsync(UserName));
         }
 
         public IActionResult AccessDenied(string returnUrl)
@@ -184,9 +114,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         [HttpGet]
         public IActionResult Claims()
         {
-            var claims = User.Claims.Select(x => new ClaimViewModel() { Issuer = x.Issuer, Type = x.Type , Value = x.Value}).ToList();
-
-            return View(claims);
+            return View(_memberService.GetClaims(User));
         }
 
         [Authorize(Policy = "CapitalCity")]
