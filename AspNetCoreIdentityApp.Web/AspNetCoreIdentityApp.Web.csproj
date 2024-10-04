@@ -7,10 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
@@ -23,6 +19,10 @@
 
 	<ItemGroup>
 		<Folder Include="Areas\Admin\Data\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\AspNetCoreIdentityApp.Service\AspNetCoreIdentityApp.Service.csproj" />
 	</ItemGroup>
 
 </Project>

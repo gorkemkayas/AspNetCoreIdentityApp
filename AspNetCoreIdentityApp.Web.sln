@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreIdentityApp.Web", "AspNetCoreIdentityApp.Web\AspNetCoreIdentityApp.Web.csproj", "{6206B786-854C-4254-8394-1553B1A38BC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreIdentityApp.Web", "AspNetCoreIdentityApp.Web\AspNetCoreIdentityApp.Web.csproj", "{6206B786-854C-4254-8394-1553B1A38BC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreIdentityApp.Core", "AspNetCoreIdentityApp.Core\AspNetCoreIdentityApp.Core.csproj", "{51367521-E4AF-48AF-A534-D0DA97014CC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreIdentityApp.Repository", "AspNetCoreIdentityApp.Repository\AspNetCoreIdentityApp.Repository.csproj", "{92D981B2-48EF-4669-BF3E-46B703E7837A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreIdentityApp.Service", "AspNetCoreIdentityApp.Service\AspNetCoreIdentityApp.Service.csproj", "{D5A2A2A6-9654-4F1D-96CA-28B3C2D929CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{6206B786-854C-4254-8394-1553B1A38BC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6206B786-854C-4254-8394-1553B1A38BC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6206B786-854C-4254-8394-1553B1A38BC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51367521-E4AF-48AF-A534-D0DA97014CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51367521-E4AF-48AF-A534-D0DA97014CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51367521-E4AF-48AF-A534-D0DA97014CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51367521-E4AF-48AF-A534-D0DA97014CC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92D981B2-48EF-4669-BF3E-46B703E7837A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92D981B2-48EF-4669-BF3E-46B703E7837A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92D981B2-48EF-4669-BF3E-46B703E7837A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92D981B2-48EF-4669-BF3E-46B703E7837A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5A2A2A6-9654-4F1D-96CA-28B3C2D929CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5A2A2A6-9654-4F1D-96CA-28B3C2D929CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5A2A2A6-9654-4F1D-96CA-28B3C2D929CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5A2A2A6-9654-4F1D-96CA-28B3C2D929CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
