@@ -1,10 +1,10 @@
 ﻿using AspNetCoreIdentityApp.Web.ClaimProvider;
 using AspNetCoreIdentityApp.Web.Extensions;
-using AspNetCoreIdentityApp.Web.Models;
+using AspNetCoreIdentityApp.Repository.Models;
 using AspNetCoreIdentityApp.Core.OptionsModel;
 using AspNetCoreIdentityApp.Core.PermissionRoot;
 using AspNetCoreIdentityApp.Web.Requirements;
-using AspNetCoreIdentityApp.Web.Seeds;
+using AspNetCoreIdentityApp.Repository.Seeds;
 using AspNetCoreIdentityApp.Web.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlCon")));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlCon"), options =>
+{
+    options.MigrationsAssembly("AspNetCoreIdentityApp.Repository");
+}));
 
 
 // Security stamp configuration. Default value is 30 minutes.

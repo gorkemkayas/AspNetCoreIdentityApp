@@ -1,7 +1,7 @@
 ﻿using AspNetCoreIdentityApp.Core.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace AspNetCoreIdentityApp.Web.Models
+namespace AspNetCoreIdentityApp.Repository.Models
 {
     public class AppUser : IdentityUser
     {

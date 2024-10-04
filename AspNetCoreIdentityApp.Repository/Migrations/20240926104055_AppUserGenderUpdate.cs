@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace AspNetCoreIdentityApp.Web.Migrations
+namespace AspNetCoreIdentityApp.Repository.Migrations
 {
     /// <inheritdoc />
     public partial class AppUserGenderUpdate : Migration

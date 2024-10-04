@@ -1,5 +1,5 @@
 ﻿using AspNetCoreIdentityApp.Web.Extensions;
-using AspNetCoreIdentityApp.Web.Models;
+using AspNetCoreIdentityApp.Repository.Models;
 using AspNetCoreIdentityApp.Core.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -91,9 +91,9 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             var userEditViewModel = new UserEditViewModel()
             {
-                UserName = currentUser.UserName,
-                Email = currentUser.Email,
-                Phone = currentUser.PhoneNumber,
+                UserName = currentUser!.UserName!,
+                Email = currentUser!.Email!,
+                Phone = currentUser!.PhoneNumber!,
                 BirthDate = currentUser.BirthDate,
                 City = currentUser.City,
                 Gender = currentUser.Gender

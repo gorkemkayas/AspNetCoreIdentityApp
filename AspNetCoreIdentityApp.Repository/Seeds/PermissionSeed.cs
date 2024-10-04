@@ -1,8 +1,8 @@
-﻿using AspNetCoreIdentityApp.Web.Models;
+﻿using AspNetCoreIdentityApp.Repository.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
-namespace AspNetCoreIdentityApp.Web.Seeds
+namespace AspNetCoreIdentityApp.Repository.Seeds
 {
     public class PermissionSeed
     {
