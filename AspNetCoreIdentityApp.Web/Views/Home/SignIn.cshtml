@@ -2,6 +2,11 @@
 @{
     ViewData["Title"] = "SignIn";
 }
+<script>
+    $(document).ready(function(){
+        $('[data-bs-toggle="tooltip"]').tooltip(); // Tooltip'i başlat
+    });
+</script>
 
 @model SignInViewModel
 
@@ -52,18 +57,17 @@
                     <a  asp-action="FacebookLogin" class="btn"><img src="/systemPictures/facebook.png" alt="facebook" class="img-fluid " style="border-radius:5px" ></a>
                 </div>
             </div>
-            <!-- İkinci kare -->
             <div class="col-2">
                 <div class="square">
                     <a  asp-action="GoogleLogin" class="btn"><img src="~/systemPictures/google.jpeg" alt="google" class="img-fluid"></a>
                 </div>
             </div>
-            <!-- Üçüncü kare -->
-            <div class="col-2">
-                <div class="square">
-                    <a  asp-action="MicrosoftLogin" class="btn"><img src="~/systemPictures/Microsoft.jpeg" alt="microsoft" class="img-fluid"></a>
-                </div>
-            </div>
+             <!-- Microsoft login disabled-->
+               <div class="col-2">
+                  <div class="square">
+                    <a href="#" class="btn"><img src="~/systemPictures/Microsoft.jpeg" alt="microsoft" class="img-fluid" style="opacity: 0.2;" data-bs-toggle="tooltip" title="Sorry, sign in with microsoft is temporarily closed."></a>
+                  </div>
+              </div>
 
         </div>
     </div>
