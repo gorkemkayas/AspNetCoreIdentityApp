@@ -24,6 +24,8 @@ namespace AspNetCoreIdentityApp.Web.ClaimProvider
 
             var currentUser = await _userManager.FindByNameAsync(identityUser!.Name!);
 
+            if(currentUser != null)
+            {
             if (String.IsNullOrEmpty(currentUser!.City))
             {
                 return principal;
@@ -36,7 +38,9 @@ namespace AspNetCoreIdentityApp.Web.ClaimProvider
                 identityUser.AddClaim(cityClaim);
             }
 
+            }
             return principal;
+
         }
     }
 }

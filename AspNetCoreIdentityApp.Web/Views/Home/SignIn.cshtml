@@ -42,5 +42,29 @@
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
+        <br />
+
+        <h6 class="text-center">You can login with social accounts!</h6>
+        <hr />
+        <div class="d-flex justify-content-center mt-4">
+            <div class="col-2">
+                <div class="square">
+                    <a  asp-action="FacebookLogin" class="btn"><img src="/systemPictures/facebook.png" alt="facebook" class="img-fluid " style="border-radius:5px" ></a>
+                </div>
+            </div>
+            <!-- İkinci kare -->
+            <div class="col-2">
+                <div class="square">
+                    <a  asp-action="GoogleLogin" class="btn"><img src="~/systemPictures/google.jpeg" alt="google" class="img-fluid"></a>
+                </div>
+            </div>
+            <!-- Üçüncü kare -->
+            <div class="col-2">
+                <div class="square">
+                    <a  asp-action="MicrosoftLogin" class="btn"><img src="~/systemPictures/Microsoft.jpeg" alt="microsoft" class="img-fluid"></a>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>

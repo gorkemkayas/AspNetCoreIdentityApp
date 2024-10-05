@@ -37,5 +37,9 @@ namespace AspNetCoreIdentityApp.Web.Areas.Admin.Controllers
 
             return View(userViewModelList);
         }
+        public IActionResult Privacy()
+        {
+            return View();
+        }
     }
 }

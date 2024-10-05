@@ -4,9 +4,11 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>dba14f6d-6ffe-4a44-b7f1-9ad6fa0f3a73</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -16,6 +18,7 @@
 
 	<ItemGroup>
 		<Folder Include="Areas\Admin\Data\" />
+		<Folder Include="wwwroot\systemPictures\" />
 	</ItemGroup>
 
 	<ItemGroup>
