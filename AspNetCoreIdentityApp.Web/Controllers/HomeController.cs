@@ -104,6 +104,14 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             return new ChallengeResult("Facebook", properties);
         }
+        public IActionResult GoogleLogin(string returnUrl)
+        {
+            string redirectUrl = Url.Action("ExternalResponse", "Home", new { returnUrl = returnUrl })!;
+
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+
+            return new ChallengeResult("Google", properties);
+        }
 
         public async Task<IActionResult> ExternalResponse(string returnUrl = "/")
         {
@@ -114,7 +122,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return RedirectToAction("Login");
             }
 
-            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.LoginProvider, true);
+            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true);
 
             if (result.Succeeded)
             {
@@ -144,7 +152,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
                 if(loginResult.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: true);
+                    await _signInManager.ExternalLoginSignInAsync(info.LoginProvider,info.ProviderKey, isPersistent: true);
                     return Redirect(returnUrl ?? "/");
                 }
             }
