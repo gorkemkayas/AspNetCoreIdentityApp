@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AspNetCoreIdentityApp.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240926104055_AppUserGenderUpdate")]
-    partial class AppUserGenderUpdate
+    [Migration("20241008073202_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace AspNetCoreIdentityApp.Repository.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AspNetCoreIdentityApp.Web.Models.AppRole", b =>
+            modelBuilder.Entity("AspNetCoreIdentityApp.Repository.Models.AppRole", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -52,7 +52,7 @@ namespace AspNetCoreIdentityApp.Repository.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("AspNetCoreIdentityApp.Web.Models.AppUser", b =>
+            modelBuilder.Entity("AspNetCoreIdentityApp.Repository.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -77,8 +77,8 @@ namespace AspNetCoreIdentityApp.Repository.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("Gender")
-                        .HasColumnType("int");
+                    b.Property<byte?>("Gender")
+                        .HasColumnType("tinyint");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -108,6 +108,9 @@ namespace AspNetCoreIdentityApp.Repository.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<short?>("TwoFactor")
+                        .HasColumnType("smallint");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -237,7 +240,7 @@ namespace AspNetCoreIdentityApp.Repository.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("AspNetCoreIdentityApp.Web.Models.AppRole", null)
+                    b.HasOne("AspNetCoreIdentityApp.Repository.Models.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -246,7 +249,7 @@ namespace AspNetCoreIdentityApp.Repository.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("AspNetCoreIdentityApp.Web.Models.AppUser", null)
+                    b.HasOne("AspNetCoreIdentityApp.Repository.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -255,7 +258,7 @@ namespace AspNetCoreIdentityApp.Repository.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("AspNetCoreIdentityApp.Web.Models.AppUser", null)
+                    b.HasOne("AspNetCoreIdentityApp.Repository.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -264,13 +267,13 @@ namespace AspNetCoreIdentityApp.Repository.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("AspNetCoreIdentityApp.Web.Models.AppRole", null)
+                    b.HasOne("AspNetCoreIdentityApp.Repository.Models.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AspNetCoreIdentityApp.Web.Models.AppUser", null)
+                    b.HasOne("AspNetCoreIdentityApp.Repository.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -279,7 +282,7 @@ namespace AspNetCoreIdentityApp.Repository.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("AspNetCoreIdentityApp.Web.Models.AppUser", null)
+                    b.HasOne("AspNetCoreIdentityApp.Repository.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -9,5 +9,7 @@ namespace AspNetCoreIdentityApp.Repository.Models
         public string? Picture { get; set; }
         public DateTime? BirthDate { get; set; }
         public Gender? Gender { get; set; }
+
+        public sbyte? TwoFactor { get; set; }
     }
 }
