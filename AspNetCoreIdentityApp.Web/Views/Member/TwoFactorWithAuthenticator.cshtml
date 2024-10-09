@@ -1,19 +1,34 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "TwoFactorWithAuthenticator";
 }
 
 @model AuthenticatorViewModel
 
+@section Scripts
+{
+<script type="text/javascript">
+    var uri = "@Model.AuthenticatorUri";
+    new QRCode(document.getElementById("qrcode"), {
+        text: uri,
+        width: 150,
+        height: 150,
+        correctLevel: QRCode.CorrectLevel.H
+    });
+</script>
+}
+
+
 <div class="row">
     <div class="col-md-6 offset-md-3">
-    <h2 class="text-center">Microsoft/Google Authentication</h2>
-    <hr />
-    <div class="container">
-        <div class="alert alert-info">
+        <h2 class="text-center">Microsoft/Google Authentication</h2>
+        <hr />
+        <div class="container">
+            <div class="alert alert-info">
                 1.Step: Scan the barcode below using the "Google/Microsoft Authenticator" app on your phone, or enter the code below on your phone.
-        </div>
-        <strong class="text-danger">Key: </strong><strong class="text-primary">@Model.SharedKey</strong>
+            </div>
+            <strong class="text-danger">Key: </strong><strong class="text-primary">@Model.SharedKey</strong>
+            <hr />
+            <div id="qrcode"></div>
 
             <div class="alert alert-info mt-3">
                 2.Step: Enter the code from your phone in the field below.
@@ -25,12 +40,12 @@
                     <input asp-for=VerificationCode class="form-control" />
                     <span asp-validation-for="VerificationCode" class=""></span>
 
-                    <input type="hidden" asp-for="AuthenticatorUri"/>
-                    <input type="hidden" asp-for="SharedKey"/>
+                    <input type="hidden" asp-for="AuthenticatorUri" />
+                    <input type="hidden" asp-for="SharedKey" />
                 </div>
-                <input type="submit" value="Activate Authentication" class="btn btn-success mt-3 float-end"/>
+                <input type="submit" value="Activate Authentication" class="btn btn-success mt-3 float-end" />
             </form>
-    </div>
+        </div>
 
     </div>
 </div>
