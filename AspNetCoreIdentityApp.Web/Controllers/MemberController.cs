@@ -159,7 +159,28 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> TwoFactorWithAuthenticator(AuthenticatorViewModel request)
         {
-            return View();
+            AppUser currentUser = (await _userManager.FindByNameAsync(UserName))!;
+            var verificationCode = request.VerificationCode.Replace("-",string.Empty).Replace(" ",string.Empty);
+
+            var isTwoFactorTokenValid = await _userManager.VerifyTwoFactorTokenAsync(currentUser,_userManager.Options.Tokens.AuthenticatorTokenProvider,verificationCode);
+
+            if(isTwoFactorTokenValid)
+            {
+                currentUser.TwoFactorEnabled = true;
+                currentUser.TwoFactor =  (sbyte)TwoFactor.MicrosoftGoogle;
+
+                var recoverCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(currentUser,5);
+
+                TempData["recoveryCodes"] = recoverCodes;
+                TempData["message"] = "Two factor verification type is set to 'Google/Microsoft Authentication' successfully!.";
+
+                return RedirectToAction(nameof(TwoFactorAuth));
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "The verification code you entered is incorrect.");
+                return View(request);
+            }
         }
         public async Task<IActionResult> TwoFactorAuth()
         {

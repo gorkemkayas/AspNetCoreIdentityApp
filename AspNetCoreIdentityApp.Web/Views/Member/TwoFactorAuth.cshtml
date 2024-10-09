@@ -1,40 +1,47 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Two Factor Authentication";
 }
 
 @model AuthenticatorViewModel
 
 <div class="row">
-    @if (TempData["message"] != null)
-    {
-        <div class="col-md-6 offset-md-3">
-            <div class="alert alert-info">
-                @TempData["message"]
-            </div>
-        </div>
-    }
     <div class="col-md-6 offset-md-3">
-    <h1 class="text-center">Two Factor Authentication</h1>
-    <hr />
+        <h1 class="text-center">Two Factor Authentication</h1>
+        <hr />
         <form asp-action="TwoFactorAuth" method="post">
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom:75px;">
                 <label asp-for="TwoFactorType" class="control-label mb-2"></label>
                 <select class="form-select" asp-for="TwoFactorType" asp-items="Html.GetEnumSelectList<TwoFactor>()"></select>
-            </div>
-            <br />
-            <div class="form-group">
-                <input type="submit" value="Update Authentication Type" class="btn btn-success float-end">
+                <input type="submit" value="Update Authentication Type" class="btn btn-success mt-2 mb-3 float-end">
             </div>
         </form>
-    @if(ViewBag.Warning != null)
-    {
-        <div class="col-md-6 offset-md-3">
-            <div class="alert alert-warning">
-                @ViewBag.Warning
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-info p-2">
+                @TempData["message"]
             </div>
-        </div>
-    }
+        }
+
+        @if (TempData["recoveryCodes"] != null)
+        {
+            <div class="alert alert-info p-2">
+                Keep the following security codes handy so you can log in when you don't have access to your phone.
+            </div>
+            <div class="alert alert-secondary p-2 text-center">
+                @foreach (var recoveryCode in TempData["recoveryCodes"] as string[])
+                {
+                    <strong class="border-3">@recoveryCode</strong>
+                }
+            </div>
+        }
+        @if (ViewBag.Warning != null)
+        {
+            <div class="col-md-6 offset-md-3">
+                <div class="alert alert-warning">
+                    @ViewBag.Warning
+                </div>
+            </div>
+        }
     </div>
 
 </div>
