@@ -8,6 +8,7 @@ using AspNetCoreIdentityApp.Web.Extensions;
 using AspNetCoreIdentityApp.Service.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using AspNetCoreIdentityApp.Core.Models;
 
 
 // ctlp pqvy ilov diyk password
@@ -60,7 +61,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
 
-            var identityResult = await _userManager.CreateAsync(new() { UserName = request.UserName, PhoneNumber = request.Phone, Email = request.Email }, request.Password);
+            var identityResult = await _userManager.CreateAsync(new() { UserName = request.UserName, PhoneNumber = request.Phone, Email = request.Email, TwoFactor = 0}, request.Password);
 
 
             if (!identityResult.Succeeded)
@@ -280,5 +281,6 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

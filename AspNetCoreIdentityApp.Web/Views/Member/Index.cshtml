@@ -12,16 +12,17 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-10 offset-md-1">
 <h1 class="text-center">User Informations</h1>
 <hr />
 
 <table class="table table-striped">
     <thead>
     <tr>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Phone Number</th>
+                    <th class="text-center">Username</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Phone Number</th>
+        <th class="text-center">Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -29,6 +30,13 @@
             <td>@Model.UserName</td>
             <td>@Model.Email</td>
             <td>@Model.PhoneNumber</td>
+            <td>
+                <div class="d-flex" style="padding-left:60px">
+                            <a asp-controller="Member" asp-action="PasswordChange" class="btn btn-outline-secondary btn-sm">Change Password</a>
+                            <a asp-controller="Member" asp-action="UserEdit" class="btn btn-secondary btn-sm mx-2">Update Informations</a>
+                            <a asp-controller="Member" asp-action="TwoFactorAuth" class="btn btn-dark btn-sm">Two Factor Authorization</a>
+                </div>
+            </td>
         </tr>
     </tbody>
 </table>

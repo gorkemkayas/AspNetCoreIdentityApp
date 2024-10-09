@@ -134,6 +134,33 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         {
             return View();
         }
+        public async Task<IActionResult> TwoFactorAuth()
+        {
+            AppUser currentUser = (await _userManager.FindByNameAsync(UserName))!;
+            
+            return View(new AuthenticatorViewModel() { TwoFactorType = (TwoFactor)currentUser!.TwoFactor!});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TwoFactorAuth(AuthenticatorViewModel request)
+        {
+            AppUser currentUser = (await _userManager.FindByNameAsync(UserName))!;
+            switch (request.TwoFactorType)
+            {
+                case TwoFactor.None:
+                    currentUser.TwoFactorEnabled = false;
+                    currentUser.TwoFactor = (sbyte)TwoFactor.None;
+                    TempData["message"] = $"Two Factor Authentication type updated as '{TwoFactor.None}'";
+                    break;
+                
+
+                
+            }
+
+            await _userManager.UpdateAsync(currentUser);
+            return View(request);
+            
+        }
 
     }
 }

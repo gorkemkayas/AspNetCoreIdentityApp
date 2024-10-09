@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewData["Title"] = "Two Factor Authentication";
+}
+
+@model AuthenticatorViewModel
+
+<div class="row">
+    @if (TempData["message"] != null)
+    {
+        <div class="col-md-6 offset-md-3">
+            <div class="alert alert-info">
+                @TempData["message"]
+            </div>
+        </div>
+    }
+    <div class="col-md-6 offset-md-3">
+    <h1 class="text-center">Two Factor Authentication</h1>
+    <hr />
+        <form asp-action="TwoFactorAuth" method="post">
+            <div class="form-group">
+                <label asp-for="TwoFactorType" class="control-label mb-2"></label>
+                <select class="form-select" asp-for="TwoFactorType" asp-items="Html.GetEnumSelectList<TwoFactor>()"></select>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Update Authentication Type" class="btn btn-success float-end">
+            </div>
+        </form>
+    @if(ViewBag.Warning != null)
+    {
+        <div class="col-md-6 offset-md-3">
+            <div class="alert alert-warning">
+                @ViewBag.Warning
+            </div>
+        </div>
+    }
+    </div>
+
+</div>
+
