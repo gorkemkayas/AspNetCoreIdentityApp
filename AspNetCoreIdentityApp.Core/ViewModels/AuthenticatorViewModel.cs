@@ -11,7 +11,7 @@ namespace AspNetCoreIdentityApp.Core.ViewModels
     public class AuthenticatorViewModel
     {
         public string SharedKey { get; set; } = null!;
-        public int AuthenticatorUri { get; set; }
+        public string? AuthenticatorUri { get; set; }
 
         [Display(Name = "Verification Code")]
         [Required(ErrorMessage ="Verification code cannot be empty.")]

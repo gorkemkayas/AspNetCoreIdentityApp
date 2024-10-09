@@ -21,14 +21,16 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IFileProvider _fileProvider;
         private readonly IMemberService _memberService;
+        private readonly TwoFactorService _twoFactorService;
         private string UserName => User.Identity!.Name!;
 
-        public MemberController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IFileProvider fileProvider, IMemberService memberService)
+        public MemberController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IFileProvider fileProvider, IMemberService memberService, TwoFactorService twoFactorService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _fileProvider = fileProvider;
             _memberService = memberService;
+            _twoFactorService = twoFactorService;
         }
 
         public async Task<IActionResult> Index()
@@ -134,6 +136,31 @@ namespace AspNetCoreIdentityApp.Web.Controllers
         {
             return View();
         }
+
+        public async Task<IActionResult> TwoFactorWithAuthenticator()
+        {
+            AppUser currentUser = (await _userManager.FindByNameAsync(UserName))!;
+            string unformattedKey = await _userManager.GetAuthenticatorKeyAsync(currentUser);
+
+            if(string.IsNullOrEmpty(unformattedKey))
+            {
+                await _userManager.ResetAuthenticatorKeyAsync(currentUser);
+                unformattedKey = (await _userManager.GetAuthenticatorKeyAsync(currentUser))!;
+            }
+
+            AuthenticatorViewModel authenticatorViewModel = new AuthenticatorViewModel();
+            authenticatorViewModel.SharedKey = unformattedKey;
+            authenticatorViewModel.AuthenticatorUri = _twoFactorService.GenerateQrCodeUri(currentUser.Email!, unformattedKey);
+
+            return View(authenticatorViewModel);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TwoFactorWithAuthenticator(AuthenticatorViewModel request)
+        {
+            return View();
+        }
         public async Task<IActionResult> TwoFactorAuth()
         {
             AppUser currentUser = (await _userManager.FindByNameAsync(UserName))!;
@@ -152,7 +179,9 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                     currentUser.TwoFactor = (sbyte)TwoFactor.None;
                     TempData["message"] = $"Two Factor Authentication type updated as '{TwoFactor.None}'";
                     break;
-                
+                case TwoFactor.MicrosoftGoogle:
+
+                    return RedirectToAction(nameof(TwoFactorWithAuthenticator));
 
                 
             }
