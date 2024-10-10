@@ -124,7 +124,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             if(signInResult.RequiresTwoFactor)
             {
-                return RedirectToAction("TwoFactorLogin");
+                return RedirectToAction(nameof(TwoFactorLogin));
             }
 
             if (signInResult.IsLockedOut)
@@ -147,6 +147,23 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             await _userManager.ResetAccessFailedCountAsync(currentUser!);
             return Redirect(returnUrl!);
+        }
+
+        public async IActionResult TwoFactorLogin(string returnUrl = "/")
+        {
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            TempData["returnUrl"] = returnUrl;
+
+            switch((TwoFactor)user!.TwoFactor!)
+            {
+                case TwoFactor.MicrosoftGoogle:
+
+                    break;
+            }
+
+            return View(new TwoFactorLoginViewModel() { TwoFactorType=(TwoFactor)user.TwoFactor, isRecoveryCode = false, RememberMe = false,VerificationCode = string.Empty});
+
         }
 
 
