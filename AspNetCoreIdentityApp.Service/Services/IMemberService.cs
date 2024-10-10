@@ -21,5 +21,6 @@ namespace AspNetCoreIdentityApp.Service.Services
         SelectList GetGenderSelectList();
         Task<(bool, IEnumerable<IdentityError>?)> EditUser(UserEditViewModel request, string userName);
         List<ClaimViewModel> GetClaims(ClaimsPrincipal principal);
+        Task<(bool, AppUser?)> GetAppUserWithEmailAsync(string email);
     }
 }

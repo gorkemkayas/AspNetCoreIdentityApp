@@ -143,5 +143,18 @@ namespace AspNetCoreIdentityApp.Service.Services
             var claims = principal.Claims.Select(x => new ClaimViewModel() { Issuer = x.Issuer, Type = x.Type, Value = x.Value }).ToList();
             return claims;
         }
+
+        public async Task<(bool,AppUser?)> GetAppUserWithEmailAsync(string email) 
+        {
+            var currentUser = await _userManager.FindByEmailAsync(email);
+            if (currentUser == null) 
+            {
+                return (false, null);
+            }
+            else
+            {
+                return (true,currentUser);
+            }
+        }
     }
 }
