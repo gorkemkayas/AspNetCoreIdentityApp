@@ -15,8 +15,10 @@ namespace AspNetCoreIdentityApp.Core.ViewModels
         [StringLength(8,ErrorMessage = "The verification code can be up to 8 characters long.")]
         public string VerificationCode { get; set; } = null!;
 
+        [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
 
+        [Display(Name = "If you will use a recovery code, tick the button.")]
         public bool isRecoveryCode { get; set; }
 
         public TwoFactor TwoFactorType { get; set; }

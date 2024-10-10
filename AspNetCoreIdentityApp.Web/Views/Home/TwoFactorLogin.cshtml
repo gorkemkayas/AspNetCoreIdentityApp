@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewData["Title"] = "TwoFactorLogin";
+}
+
+@model TwoFactorLoginViewModel
+
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial");
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h1 class="text-center">Two Factor Login</h1>
+        <hr />
+        <div class="alert alert-info">
+            @switch (Model.TwoFactorType)
+            {
+                case TwoFactor.MicrosoftGoogle:
+                    <span>Enter the code sent to your Authenticator app in this field.</span>
+                    break;
+                case TwoFactor.Email:
+                    <span>Enter the Email code sent to your email in this field.</span>
+                    break;
+                case TwoFactor.Phone:
+                    <span>Enter the SMS code sent to your phone in this field.</span>
+                    break;
+            }
+        </div>
+        <form asp-action="TwoFactorLogin" method="post">
+        <div class="form-group">
+            <label asp-for="VerificationCode" class="form-label"></label>
+            <input asp-for="VerificationCode" class="form-control" />
+            <span asp-validation-for="VerificationCode" class="text-danger"></span>
+        </div>
+        <div class="form-group d-flex mt-2">
+            <input asp-for="RememberMe" class="form-check" type="checkbox"/>
+            <label asp-for="RememberMe" class="ms-1"></label>
+        </div>
+        @if(Model.TwoFactorType == TwoFactor.MicrosoftGoogle)
+        {
+                <div class="form-group d-flex mt-2">
+                <input asp-for="isRecoveryCode" class="form-check" type="checkbox" />
+                <label asp-for="isRecoveryCode" class="ms-1"></label>
+            </div>
+        }
+        <div class="form-group float-end mt-2">
+            <input type="submit" value="Authorize" class="btn btn-primary" />
+        </div>
+        </form>
+    </div>
+</di>

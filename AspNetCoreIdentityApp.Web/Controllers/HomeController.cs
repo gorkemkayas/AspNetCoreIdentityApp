@@ -149,7 +149,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             return Redirect(returnUrl!);
         }
 
-        public async IActionResult TwoFactorLogin(string returnUrl = "/")
+        public async Task<IActionResult> TwoFactorLogin(string returnUrl = "/")
         {
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
 
