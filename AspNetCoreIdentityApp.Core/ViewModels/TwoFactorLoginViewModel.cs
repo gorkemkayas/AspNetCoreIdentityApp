@@ -12,7 +12,7 @@ namespace AspNetCoreIdentityApp.Core.ViewModels
     {
         [Display(Name = "Verification Code")]
         [Required(ErrorMessage ="Verification code cannot be empty!")]
-        [StringLength(8,ErrorMessage = "The verification code can be up to 8 characters long.")]
+        
         public string VerificationCode { get; set; } = null!;
 
         [Display(Name = "Remember Me")]

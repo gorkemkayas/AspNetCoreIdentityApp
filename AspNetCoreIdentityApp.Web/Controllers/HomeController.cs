@@ -60,7 +60,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 return View();
             }
 
-            var identityResult = await _userManager.CreateAsync(new() { UserName = request.UserName, PhoneNumber = request.Phone, Email = request.Email, TwoFactor = 0}, request.Password);
+            var identityResult = await _userManager.CreateAsync(new() { UserName = request.UserName, PhoneNumber = request.Phone, Email = request.Email, TwoFactor = 0 }, request.Password);
 
 
             if (!identityResult.Succeeded)
@@ -87,12 +87,11 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             return RedirectToAction(nameof(SignUp));
 
         }
-
-
         public IActionResult SignIn()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> SignIn(SignInViewModel request, string? returnUrl = null)
         {
@@ -110,10 +109,10 @@ namespace AspNetCoreIdentityApp.Web.Controllers
                 ModelState.AddModelError(string.Empty, "The email or password is not correct.");
                 return View();
             }
-            var (isSuccess,currentUser) = await _memberService.GetAppUserWithEmailAsync(request.Email);
+            var (isSuccess, currentUser) = await _memberService.GetAppUserWithEmailAsync(request.Email);
             var isCorrectInfo = await _userManager.CheckPasswordAsync(currentUser!, request.Password);
 
-            if(!isSuccess)
+            if (!isSuccess)
             {
                 ModelState.AddModelError(string.Empty, "User is not found.");
                 return View(request);
@@ -122,7 +121,7 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             await _signInManager.SignOutAsync();
             var signInResult = await _signInManager.PasswordSignInAsync(hasUser, request.Password, request.RememberMe, true);
 
-            if(signInResult.RequiresTwoFactor)
+            if (signInResult.RequiresTwoFactor)
             {
                 return RedirectToAction(nameof(TwoFactorLogin));
             }
@@ -155,15 +154,57 @@ namespace AspNetCoreIdentityApp.Web.Controllers
 
             TempData["returnUrl"] = returnUrl;
 
-            switch((TwoFactor)user!.TwoFactor!)
+            switch ((TwoFactor)user!.TwoFactor!)
             {
                 case TwoFactor.MicrosoftGoogle:
 
                     break;
             }
 
-            return View(new TwoFactorLoginViewModel() { TwoFactorType=(TwoFactor)user.TwoFactor, isRecoveryCode = false, RememberMe = false,VerificationCode = string.Empty});
+            return View(new TwoFactorLoginViewModel() { TwoFactorType = (TwoFactor)user.TwoFactor, isRecoveryCode = false, RememberMe = false, VerificationCode = string.Empty });
 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TwoFactorLogin(TwoFactorLoginViewModel request)
+        {
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            ModelState.Clear();
+
+            bool isSuccessAuth = false;
+
+            if ((TwoFactor)user!.TwoFactor! == TwoFactor.MicrosoftGoogle)
+            {
+                Microsoft.AspNetCore.Identity.SignInResult result;
+                if (request.isRecoveryCode)
+                {
+                    result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(request.VerificationCode);
+
+                }
+                else
+                {
+                    result = await _signInManager.TwoFactorAuthenticatorSignInAsync(request.VerificationCode, request.RememberMe, false);
+                }
+
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "The verification code is incorrect.");
+                    request.TwoFactorType = (TwoFactor)user.TwoFactor;
+                    return View(request);
+                }
+
+                isSuccessAuth = true;
+            }
+
+            if(isSuccessAuth)
+            {
+                return Redirect(TempData["returnUrl"].ToString());
+            }
+            
+            request.TwoFactorType = (TwoFactor)user.TwoFactor;
+
+            return View(request);
         }
 
 
@@ -205,9 +246,9 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             user.Email = info.Principal.FindFirst(ClaimTypes.Email)!.Value;
             string ExternalUserId = info.Principal.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-            if(info.Principal.HasClaim(x => x.Type == ClaimTypes.Name))
+            if (info.Principal.HasClaim(x => x.Type == ClaimTypes.Name))
             {
-                string userName = info.Principal.FindFirst(ClaimTypes.Name)!.Value.Replace(" ", "-").ToLower() + ExternalUserId.Substring(0,5).ToString();
+                string userName = info.Principal.FindFirst(ClaimTypes.Name)!.Value.Replace(" ", "-").ToLower() + ExternalUserId.Substring(0, 5).ToString();
 
                 user.UserName = userName;
             }
@@ -215,16 +256,16 @@ namespace AspNetCoreIdentityApp.Web.Controllers
             {
                 user.UserName = info.Principal.FindFirst(ClaimTypes.Email)!.Value;
             }
-            
+
             IdentityResult createResult = await _userManager.CreateAsync(user);
 
-            if(createResult.Succeeded)
+            if (createResult.Succeeded)
             {
-                IdentityResult loginResult = await _userManager.AddLoginAsync(user,info);
+                IdentityResult loginResult = await _userManager.AddLoginAsync(user, info);
 
-                if(loginResult.Succeeded)
+                if (loginResult.Succeeded)
                 {
-                    await _signInManager.ExternalLoginSignInAsync(info.LoginProvider,info.ProviderKey, isPersistent: true);
+                    await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true);
                     return Redirect(returnUrl ?? "/");
                 }
             }
